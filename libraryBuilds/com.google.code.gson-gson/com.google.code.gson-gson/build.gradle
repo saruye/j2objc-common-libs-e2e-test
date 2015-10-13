@@ -16,6 +16,7 @@
 
 dependencies {
     j2objcTranslation 'com.google.code.gson:gson:2.3.1:sources'
+    testCompile 'junit:junit:4.11'
 }
 
 j2objcConfig {
