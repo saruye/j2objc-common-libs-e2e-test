@@ -15,8 +15,8 @@
  */
 
 dependencies {
-    j2objcTranslation 'com.google.code.gson:gson:2.3.1:sources'
-    testCompile 'junit:junit:4.11'
+    compile project(':com.fasterxml.jackson.core-jackson-core')
+    j2objcTranslation 'com.fasterxml.jackson.core:jackson-annotations:2.5.3:sources'
 }
 
 j2objcConfig {

@@ -15,12 +15,16 @@
  */
 
 dependencies {
-    j2objcTranslation 'com.google.code.gson:gson:2.3.1:sources'
-    testCompile 'junit:junit:4.11'
+    j2objcTranslation 'com.fasterxml.jackson.core:jackson-core:2.5.3:sources'
 }
 
 j2objcConfig {
     // Almost always there are no tests provided in an external source jar.
+
+autoConfigureDeps true
+    forceFilenameCollisionCheck false
+    translateArgs = ['--segmented-headers', '--extract-unsequenced', '--build-closure']
+
     testMinExpectedTests 0
     finalConfigure()
 }
