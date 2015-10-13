@@ -14,33 +14,22 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        // This is the build output of the plugin itself.
-        classpath fileTree(dir: '../../j2objc-gradle/build/libs', include: ['*.jar'])
-    }
+dependencies {
+    compile project(':com.fasterxml.jackson.core-jackson-core')
+    compile project(':com.fasterxml.jackson.core-jackson-annotations')
+    j2objcTranslation 'com.fasterxml.jackson.core:jackson-databind:2.5.3:sources'
+    testCompile 'junit:junit:4.11'
 }
 
-subprojects {
+j2objcConfig {
+    
+    autoConfigureDeps true
 
-    apply plugin: 'java'
-    apply plugin: 'com.github.j2objccontrib.j2objcgradle'
-
-    sourceCompatibility = 1.7
-    targetCompatibility =  1.7
-
-    repositories {
-        jcenter()
+    translatePattern {
+        exclude '**/fasterxml/jackson/databind/ext/DOMSerializer.java'
     }
-
-    test {
-        testLogging {
-            // Provide full exception info on failure, instead
-            // of just pointing to an HTML file.
-            exceptionFormat 'full'
-        }
+    testPattern {
+        include '**/*Test.java'
     }
+    finalConfigure()
 }

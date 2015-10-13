@@ -14,33 +14,13 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        // This is the build output of the plugin itself.
-        classpath fileTree(dir: '../../j2objc-gradle/build/libs', include: ['*.jar'])
-    }
+dependencies {
+    compile project(':com.fasterxml.jackson.core-jackson-core')
+    j2objcTranslation 'com.fasterxml.jackson.core:jackson-annotations:2.5.3:sources'
 }
 
-subprojects {
-
-    apply plugin: 'java'
-    apply plugin: 'com.github.j2objccontrib.j2objcgradle'
-
-    sourceCompatibility = 1.7
-    targetCompatibility =  1.7
-
-    repositories {
-        jcenter()
-    }
-
-    test {
-        testLogging {
-            // Provide full exception info on failure, instead
-            // of just pointing to an HTML file.
-            exceptionFormat 'full'
-        }
-    }
+j2objcConfig {
+    // Almost always there are no tests provided in an external source jar.
+    testMinExpectedTests 0
+    finalConfigure()
 }
