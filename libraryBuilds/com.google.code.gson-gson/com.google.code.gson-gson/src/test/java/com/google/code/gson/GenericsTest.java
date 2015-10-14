@@ -20,7 +20,6 @@ public class GenericsTest {
         private ArrayList<Address> addressList;
         private Address singleAddress;
 
-        //        @JsonCreator
         public Person(String name,
                       String lastName,
                       int age,
@@ -29,14 +28,11 @@ public class GenericsTest {
             this.lastName = lastName;
             this.age = age;
             this.addressList = addressList;
-            System.out.println("use creator");
         }
 
-        Person(){
-            System.out.println("use notmal constructor");
+        Person() {
         }
 
-        // getters and setters
 
         @Override
         public String toString() {
@@ -101,18 +97,15 @@ public class GenericsTest {
         private int zipcode;
         private String street;
 
-        Address(){
+        Address() {
 
         }
 
-        //        @JsonCreator
-        public Address( int zipcode,
-                        String street) {
+        public Address(int zipcode,
+                       String street) {
             this.zipcode = zipcode;
             this.street = street;
         }
-
-        // getters and setters
 
         @Override
         public String toString() {
@@ -144,23 +137,21 @@ public class GenericsTest {
 
     @Test
     public void testMarshalling() throws IOException {
-        System.out.println("jackson testMarshalling");
         Address homeAddress = new Address(12345, "Stenhammer Drive");
         Address workAddress = new Address(7986, "Market Street");
         ArrayList<Address> addressList = new ArrayList<>();
         addressList.add(homeAddress);
         addressList.add(workAddress);
+
         Person person = new Person("Sawyer", "Bootstrapper", 23, addressList);
         person.setSingleAddress(workAddress);
-        // object mapper is the main object to marshall (write) data into JSON
+
         Gson objectMapper = new Gson();
         String value = objectMapper.toJson(person);
-        System.out.println(value);
 
         JsonParser parser = new JsonParser();
 
-        Assert.assertEquals( parser.parse(jsonValue),parser.parse(value));
-        System.out.println("marshalling works");
+        Assert.assertEquals(parser.parse(jsonValue), parser.parse(value));
 
     }
 
@@ -168,40 +159,37 @@ public class GenericsTest {
             "\"Stenhammer Drive\"},{\"zipcode\":7986,\"street\":\"Market Street\"}],\"singleAddress\":{\"zipcode\":7986,\"street\":\"Market Street\"}}";
 
     @Test
-    public void testDemarshalling() throws IOException {
-        System.out.println("jackson test demarshalling");
+    public void testDemarshallingWithEmbeddedObject() throws IOException {
         Gson objectMapper = new Gson();
         Person personValue = objectMapper.fromJson(jsonValue, Person.class);
-        System.out.println("print person");
-        System.out.println(personValue.toString());
-        System.out.println("print addresses");
-        System.out.println(personValue.getAddressList().getClass());
-        System.out.println(personValue.getAddressList().get(0).getClass());
-        System.out.println(personValue.getAddressList());
-        System.out.println("print back to json");
-        System.out.println(objectMapper.toJson(personValue));
+        Assert.assertTrue(personValue.getSingleAddress() instanceof Address);
+        Assert.assertEquals(7986, personValue.singleAddress.zipcode);
+        Assert.assertEquals("Market Street", personValue.singleAddress.street);
+    }
 
-        System.out.println("print single address:");
-        System.out.println(personValue.singleAddress.getClass());
-        System.out.println(personValue.getSingleAddress().toString());
-
-        System.out.println("asserts");
-
+    @Test
+    public void testDemarshallingSimpleFields() throws IOException {
+        Gson objectMapper = new Gson();
+        Person personValue = objectMapper.fromJson(jsonValue, Person.class);
 
         Assert.assertEquals("Sawyer", personValue.name);
         Assert.assertEquals("Bootstrapper", personValue.lastName);
         Assert.assertEquals(23, personValue.age);
 
-        Assert.assertEquals(7986, personValue.singleAddress.zipcode);
-        Assert.assertEquals("Market Street", personValue.singleAddress.street);
+    }
+
+    @Test
+    public void testDemarshallingListField() throws IOException {
+        Gson objectMapper = new Gson();
+        Person personValue = objectMapper.fromJson(jsonValue, Person.class);
 
         List<Address> addresses = personValue.addressList;
-        Assert.assertEquals(2,addresses.size());
+        Assert.assertEquals(2, addresses.size());
         Address firstAddress = addresses.get(0);
+        Assert.assertTrue(firstAddress instanceof Address);
+
         Assert.assertEquals(12345, firstAddress.zipcode);
         Assert.assertEquals("Stenhammer Drive", firstAddress.street);
-        System.out.println("demarhsalling works");
-
 
     }
 }
