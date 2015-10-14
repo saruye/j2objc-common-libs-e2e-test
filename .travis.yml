@@ -19,6 +19,7 @@ env:
 #   allow_failures:
 #     # Blocked on (github issue url)
 #     - env: TEST_DIR=com.example-library
+      - env: TEST_DIR=com.fasterxml.jackson.core
 
 branches:
   only:
