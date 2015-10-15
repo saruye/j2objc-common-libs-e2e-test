@@ -18,9 +18,9 @@ env:
 # Uncomment to add a library that should fail to build, along with documentation on why.
 matrix:
   allow_failures:
-#     # Blocked on (github issue url)
+      # Blocked on (github issue url)
 #     - env: TEST_DIR=com.example-library
-#     # Blocked on: https://github.com/j2objc-contrib/j2objc-common-libs-e2e-test/issues/48
+      # Blocked on: https://github.com/j2objc-contrib/j2objc-common-libs-e2e-test/issues/48
     - env: TEST_DIR=com.fasterxml.jackson.core
 
 branches:

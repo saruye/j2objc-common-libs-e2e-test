@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 dependencies {
     compile project(':com.fasterxml.jackson.core-jackson-core')
@@ -23,21 +21,11 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
-test {
-    testLogging {
-        // Provide full exception info on failure, instead
-        // of just pointing to an HTML file.
-        exceptionFormat = 'full'
-    }
-}
-
-
 j2objcConfig {
-    // Almost always there are no tests provided in an external source jar.
-    // testMinExpectedTests 0
-    autoConfigureDeps true
-    forceFilenameCollisionCheck false
-    translateArgs = ['--segmented-headers', '--extract-unsequenced', '--build-closure']
+
+    translateArgs '--segmented-headers'
+    translateArgs '--extract-unsequenced'
+
     translatePattern {
         exclude '**/fasterxml/jackson/databind/ext/DOMSerializer.java'
     }

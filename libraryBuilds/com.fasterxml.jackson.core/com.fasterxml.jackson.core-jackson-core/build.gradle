@@ -19,11 +19,8 @@ dependencies {
 }
 
 j2objcConfig {
-    // Almost always there are no tests provided in an external source jar.
-
-autoConfigureDeps true
-    forceFilenameCollisionCheck false
-    translateArgs = ['--segmented-headers', '--extract-unsequenced', '--build-closure']
+    translateArgs '--segmented-headers'
+    translateArgs '--extract-unsequenced'
 
     testMinExpectedTests 0
     finalConfigure()
