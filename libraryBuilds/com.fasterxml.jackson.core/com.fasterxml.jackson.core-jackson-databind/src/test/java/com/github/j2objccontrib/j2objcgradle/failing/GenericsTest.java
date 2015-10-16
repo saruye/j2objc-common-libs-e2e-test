@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2015 the authors of j2objc-common-libs-e2e-test
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.j2objccontrib.j2objcgradle.failing;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,90 +28,30 @@ import java.util.List;
 public class GenericsTest {
     public static class Person {
 
-        private String name;
-        private String lastName;
-        private int age;
-        private ArrayList<Address> addressList;
-        private Address singleAddress;
-
-        public Person(String name,
-                      String lastName,
-                      int age,
-                      ArrayList<Address> addressList) {
-            this.name = name;
-            this.lastName = lastName;
-            this.age = age;
-            this.addressList = addressList;
-        }
+        public String name;
+        public int age;
+        public ArrayList<Address> addressList;
+        public Address singleAddress;
 
         Person() {
         }
 
-        @Override
-        public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("name: ")
-                    .append(this.name).append("\n")
-                    .append("lastName: ")
-                    .append(this.lastName).append("\n")
-                    .append("age: ")
-                    .append(this.age).append("\n");
-
-            for (Address address : this.addressList) {
-                stringBuilder.append(address.toString());
-            }
-
-            return stringBuilder.toString();
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public int getAge() {
-            return age;
-        }
-
-        public List<Address> getAddressList() {
-            return addressList;
-        }
-
-        public void setName(String name) {
+        public Person(String name,
+                      int age,
+                      ArrayList<Address> addressList) {
             this.name = name;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public void setAge(int age) {
             this.age = age;
-        }
-
-        public void setAddressList(ArrayList<Address> addressList) {
             this.addressList = addressList;
         }
 
-        public Address getSingleAddress() {
-            return singleAddress;
-        }
-
-        public void setSingleAddress(Address singleAddress) {
-            this.singleAddress = singleAddress;
-        }
     }
 
     public static class Address {
 
-        private int zipcode;
-        private String street;
+        public int zipcode;
+        public String street;
 
         Address() {
-
         }
 
         public Address(int zipcode,
@@ -104,32 +60,6 @@ public class GenericsTest {
             this.street = street;
         }
 
-        @Override
-        public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("zipcode: ")
-                    .append(this.zipcode).append("\n")
-                    .append("street: ")
-                    .append(this.street).append("\n");
-
-            return stringBuilder.toString();
-        }
-
-        public int getZipcode() {
-            return zipcode;
-        }
-
-        public String getStreet() {
-            return street;
-        }
-
-        public void setZipcode(int zipcode) {
-            this.zipcode = zipcode;
-        }
-
-        public void setStreet(String street) {
-            this.street = street;
-        }
     }
 
     @Test
@@ -139,8 +69,8 @@ public class GenericsTest {
         ArrayList<Address> addressList = new ArrayList<>();
         addressList.add(homeAddress);
         addressList.add(workAddress);
-        Person person = new Person("Sawyer", "Bootstrapper", 23, addressList);
-        person.setSingleAddress(workAddress);
+        Person person = new Person("Sawyer", 23, addressList);
+        person.singleAddress=workAddress;
 
         ObjectMapper objectMapper = new ObjectMapper();
         String value = objectMapper.writeValueAsString(person);
@@ -151,7 +81,7 @@ public class GenericsTest {
 
     }
 
-    private static String jsonValue = "{\"name\":\"Sawyer\",\"lastName\":\"Bootstrapper\",\"age\":23,\"addressList\":[{\"zipcode\":12345,\"street\":" +
+    private static String jsonValue = "{\"name\":\"Sawyer\",\"age\":23,\"addressList\":[{\"zipcode\":12345,\"street\":" +
             "\"Stenhammer Drive\"},{\"zipcode\":7986,\"street\":\"Market Street\"}],\"singleAddress\":{\"zipcode\":7986,\"street\":\"Market Street\"}}";
 
 
@@ -159,7 +89,7 @@ public class GenericsTest {
     public void testDemarshallingWithEmbeddedObject() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Person personValue = objectMapper.readValue(jsonValue, Person.class);
-        Assert.assertTrue(personValue.getSingleAddress() instanceof Address);
+        Assert.assertTrue(personValue.singleAddress instanceof Address);
         Assert.assertEquals(7986, personValue.singleAddress.zipcode);
         Assert.assertEquals("Market Street", personValue.singleAddress.street);
     }
@@ -170,11 +100,11 @@ public class GenericsTest {
         Person personValue = objectMapper.readValue(jsonValue, Person.class);
 
         Assert.assertEquals("Sawyer", personValue.name);
-        Assert.assertEquals("Bootstrapper", personValue.lastName);
         Assert.assertEquals(23, personValue.age);
 
     }
 
+    // This tests fails due to a bug in j2objc (https://github.com/google/j2objc/issues/639)
     @Test
     public void testDemarshallingListField() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -187,7 +117,6 @@ public class GenericsTest {
 
         Assert.assertEquals(12345, firstAddress.zipcode);
         Assert.assertEquals("Stenhammer Drive", firstAddress.street);
-        System.out.println("demarhsalling works");
 
     }
 }

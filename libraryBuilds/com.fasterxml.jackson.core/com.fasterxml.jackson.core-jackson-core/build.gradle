@@ -19,7 +19,7 @@ dependencies {
 }
 
 j2objcConfig {
-    translateArgs '--segmented-headers'
+    translateArgs '--segmented-headers' // import loops
 
     testMinExpectedTests 0
     finalConfigure()

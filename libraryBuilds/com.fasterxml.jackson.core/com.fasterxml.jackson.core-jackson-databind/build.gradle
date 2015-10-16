@@ -22,14 +22,10 @@ dependencies {
 }
 
 j2objcConfig {
-    
     autoConfigureDeps true
 
     translatePattern {
         exclude '**/fasterxml/jackson/databind/ext/DOMSerializer.java'
-    }
-    testPattern {
-        include '**/*Test.java'
     }
     finalConfigure()
 }
