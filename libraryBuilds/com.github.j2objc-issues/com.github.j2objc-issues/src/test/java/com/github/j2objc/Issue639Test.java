@@ -18,9 +18,9 @@ package com.github.j2objc;
 
 import org.junit.Assert;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
@@ -40,11 +40,38 @@ public class Issue639Test {
         Assert.assertTrue(List.class == addressesField.getType());
         Type genericType = addressesField.getGenericType();
         System.out.println("generictype: " + genericType);
-        ParameterizedTypeImpl parameterizedType = ParameterizedTypeImpl.make(List.class, new Type[]{Address.class}, null);
+        ParameterizedType parameterizedType = expectedType(List.class,Address.class);
         System.out.println("created type: " + parameterizedType);
+        System.out.println("created type2: " + addresses.getClass().getTypeParameters());
 
         Assert.assertEquals(parameterizedType, genericType);
 
+    }
+
+    private ParameterizedType expectedType(final Type mainType, final Type genericType) {
+        return new ParameterizedType() {
+            @Override
+            public Type[] getActualTypeArguments() {
+                return new Type[]{genericType};
+            }
+
+            @Override
+            public Type getRawType() {
+                return mainType;
+            }
+
+            @Override
+            public Type getOwnerType() {
+                return null;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if(!(obj instanceof ParameterizedType)) return false;
+                ParameterizedType castedObj = (ParameterizedType)obj;
+                return Arrays.equals(getActualTypeArguments(),castedObj.getActualTypeArguments())&& getRawType().equals(castedObj.getRawType());
+            }
+        };
     }
 
 
@@ -62,6 +89,22 @@ public class Issue639Test {
         }
 
         public String street;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Address address = (Address) o;
+
+            return !(street != null ? !street.equals(address.street) : address.street != null);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return street != null ? street.hashCode() : 0;
+        }
     }
 
 }
