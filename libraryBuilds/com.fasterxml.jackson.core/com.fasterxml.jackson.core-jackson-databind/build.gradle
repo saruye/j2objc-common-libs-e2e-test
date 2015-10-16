@@ -22,9 +22,8 @@ dependencies {
 }
 
 j2objcConfig {
-
-    translateArgs '--segmented-headers'
-    translateArgs '--extract-unsequenced'
+    
+    autoConfigureDeps true
 
     translatePattern {
         exclude '**/fasterxml/jackson/databind/ext/DOMSerializer.java'
