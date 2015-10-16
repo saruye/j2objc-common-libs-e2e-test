@@ -39,40 +39,18 @@ public class Issue639Test {
 
         Assert.assertTrue(List.class == addressesField.getType());
         Type genericType = addressesField.getGenericType();
-        System.out.println("generictype: " + genericType);
-        ParameterizedType parameterizedType = expectedType(List.class,Address.class);
-        System.out.println("created type: " + parameterizedType);
-        System.out.println("created type2: " + addresses.getClass().getTypeParameters());
 
-        Assert.assertEquals(parameterizedType, genericType);
+        Assert.assertTrue(genericType instanceof ParameterizedType);
+        ParameterizedType castedType = (ParameterizedType) genericType;
+
+        Assert.assertEquals(1,castedType.getActualTypeArguments().length);
+        Assert.assertEquals(List.class, castedType.getRawType());
+        Type addressType =  castedType.getActualTypeArguments()[0];
+
+        Assert.assertEquals(Address.class,addressType);
 
     }
 
-    private ParameterizedType expectedType(final Type mainType, final Type genericType) {
-        return new ParameterizedType() {
-            @Override
-            public Type[] getActualTypeArguments() {
-                return new Type[]{genericType};
-            }
-
-            @Override
-            public Type getRawType() {
-                return mainType;
-            }
-
-            @Override
-            public Type getOwnerType() {
-                return null;
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                if(!(obj instanceof ParameterizedType)) return false;
-                ParameterizedType castedObj = (ParameterizedType)obj;
-                return Arrays.equals(getActualTypeArguments(),castedObj.getActualTypeArguments())&& getRawType().equals(castedObj.getRawType());
-            }
-        };
-    }
 
 
     public static class Person {
